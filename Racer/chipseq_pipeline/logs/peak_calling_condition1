@@ -1,0 +1,56 @@
+INFO  @ Fri, 08 Dec 2017 19:07:21: 
+# Command line: callpeak -t /home/bms2017_08/tmp/chipseq/samples/chip1/chip1.sam -c /home/bms2017_08/tmp/chipseq/samples/input1/input1.sam -f SAM --outdir . -n condition_1
+# ARGUMENTS LIST:
+# name = condition_1
+# format = SAM
+# ChIP-seq file = ['/home/bms2017_08/tmp/chipseq/samples/chip1/chip1.sam']
+# control file = ['/home/bms2017_08/tmp/chipseq/samples/input1/input1.sam']
+# effective genome size = 2.70e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 5.00e-02
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 1000 bps and 10000 bps
+# Broad region calling is off
+# Paired-End mode is off
+ 
+INFO  @ Fri, 08 Dec 2017 19:07:21: #1 read tag files... 
+INFO  @ Fri, 08 Dec 2017 19:07:21: #1 read treatment tags... 
+INFO  @ Fri, 08 Dec 2017 19:07:27:  1000000 
+INFO  @ Fri, 08 Dec 2017 19:07:33:  2000000 
+INFO  @ Fri, 08 Dec 2017 19:07:39:  3000000 
+INFO  @ Fri, 08 Dec 2017 19:07:40: #1.2 read input tags... 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 tag size is determined as 36 bps 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 tag size = 36 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  total tags in treatment: 3022430 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 user defined the maximum tags... 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  tags after filtering in treatment: 1926780 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  Redundant rate of treatment: 0.36 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  total tags in control: 453274 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 user defined the maximum tags... 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  tags after filtering in control: 399505 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1  Redundant rate of control: 0.12 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #1 finished! 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #2 Build Peak Model... 
+INFO  @ Fri, 08 Dec 2017 19:07:43: #2 looking for paired plus/minus strand peaks... 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #2 number of paired peaks: 5233 
+INFO  @ Fri, 08 Dec 2017 19:07:44: start model_add_line... 
+INFO  @ Fri, 08 Dec 2017 19:07:44: start X-correlation... 
+INFO  @ Fri, 08 Dec 2017 19:07:44: end of X-cor 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #2 finished! 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #2 predicted fragment length is 168 bps 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #2 alternative fragment length(s) may be 168 bps 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #2.2 Generate R script for model : ./condition_1_model.r 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #3 Call peaks... 
+INFO  @ Fri, 08 Dec 2017 19:07:44: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Fri, 08 Dec 2017 19:07:48: #3 Call peaks for each chromosome... 
+INFO  @ Fri, 08 Dec 2017 19:07:50: #4 Write output xls file... ./condition_1_peaks.xls 
+INFO  @ Fri, 08 Dec 2017 19:07:50: #4 Write peak in narrowPeak format file... ./condition_1_peaks.narrowPeak 
+INFO  @ Fri, 08 Dec 2017 19:07:50: #4 Write summits bed file... ./condition_1_summits.bed 
+INFO  @ Fri, 08 Dec 2017 19:07:50: Done! 
+Starting...
+Reading annotation.gtf file
+Reading condition_1_summits.bed file
+Program ended successfully

@@ -1,0 +1,41 @@
+param_file.txt
+/home/marsanro/tmp/examen_rnaseq/samples/sample4
+Skipping 'sample4_1.fastq' which didn't exist, or couldn't be read
+Warning: Could not open read file "sample4_1.fastq" for reading; skipping...
+Error: No input read files were valid
+(ERR): hisat2-align exited with value 1
+[E::hts_open_format] Failed to open file sample4.sam
+samtools sort: can't open "sample4.sam": No such file or directory
+rm: cannot remove 'sample4.sam': No such file or directory
+[E::hts_open_format] Failed to open file sample4.bam
+samtools index: failed to open "sample4.bam": No such file or directory
+Error: input file sample4.bam cannot be found!
+Que coño pasa aquí
+Started analysis of sample4_1.fastq
+Approx 5% complete for sample4_1.fastq
+Approx 10% complete for sample4_1.fastq
+Approx 15% complete for sample4_1.fastq
+Approx 20% complete for sample4_1.fastq
+Approx 25% complete for sample4_1.fastq
+Approx 30% complete for sample4_1.fastq
+Approx 35% complete for sample4_1.fastq
+Approx 40% complete for sample4_1.fastq
+Approx 45% complete for sample4_1.fastq
+Approx 50% complete for sample4_1.fastq
+Approx 55% complete for sample4_1.fastq
+Approx 60% complete for sample4_1.fastq
+Approx 65% complete for sample4_1.fastq
+Approx 70% complete for sample4_1.fastq
+Approx 75% complete for sample4_1.fastq
+Approx 80% complete for sample4_1.fastq
+Approx 85% complete for sample4_1.fastq
+Approx 90% complete for sample4_1.fastq
+Approx 95% complete for sample4_1.fastq
+Analysis complete for sample4_1.fastq
+9097783 reads; of these:
+  9097783 (100.00%) were unpaired; of these:
+    8214 (0.09%) aligned 0 times
+    8897129 (97.79%) aligned exactly 1 time
+    192440 (2.12%) aligned >1 times
+99.91% overall alignment rate
+[bam_sort_core] merging from 3 files and 1 in-memory blocks...

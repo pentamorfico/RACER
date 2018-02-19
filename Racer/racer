@@ -1,0 +1,26 @@
+if [ $# -eq 0 ]
+then
+    echo "No parameters file has been submitted. To proceed, please
+    edit the file param-file.txt provided in the example or create a
+    parameters file yourself by following the next instructions"
+    echo "Do you want to create a parameters file?"
+    read ANSWER
+    ANSWER=${ANSWER,,}
+    if [ $ANSWER == "yes"]
+    then
+        qsub param-file-generator.sge
+    elif [ $ANSWER == "no"]
+    then
+        echo "Stopping execution of RACER"
+        exit 1
+    else
+        echo "Wrong answer, please type yes/no"
+        exit 1
+    fi
+elif [ $# -gt 1 ]
+then
+    "Please submit only the path to the parameters file"
+elif [ $# -eq 1 ]
+then
+    qsub racer-setup.sge $1
+fi

@@ -1,0 +1,12 @@
+installation_folder: /home/marsanro/dev/rnaseq_pipeline
+local: YES
+root_directory: /home/marsanro/tmp
+experiment_name: examen_rnaseq
+number_of_samples: 4
+genome: /home/marsanro/lavidaesbella/rna_seq/genome/chr5.fa
+annotation: /home/marsanro/lavidaesbella/rna_seq/annotation/chr5.gtf
+
+sample1: /home/marsanro/lavidaesbella/rna_seq/samples/sample_1/abc_7dag_chr5_1.fastq
+sample2: /home/marsanro/lavidaesbella/rna_seq/samples/sample_2/abc_7dag_chr5_2.fastq
+sample3: /home/marsanro/lavidaesbella/rna_seq/samples/sample_3/col0_7dag_chr5_1.fastq
+sample4: /home/marsanro/lavidaesbella/rna_seq/samples/sample_4/col0_7dag_chr5_2.fastq

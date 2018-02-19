@@ -1,0 +1,66 @@
+INFO  @ Fri, 16 Feb 2018 15:41:45: 
+# Command line: callpeak -t /home/marsanro/tmp/examen_chipseq/samples/chip2/chip2.sam -c /home/marsanro/tmp/examen_chipseq/samples/input1/input1.sam -f SAM --outdir . -n condition_2
+# ARGUMENTS LIST:
+# name = condition_2
+# format = SAM
+# ChIP-seq file = ['/home/marsanro/tmp/examen_chipseq/samples/chip2/chip2.sam']
+# control file = ['/home/marsanro/tmp/examen_chipseq/samples/input1/input1.sam']
+# effective genome size = 2.70e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 5.00e-02
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 1000 bps and 10000 bps
+# Broad region calling is off
+# Paired-End mode is off
+ 
+INFO  @ Fri, 16 Feb 2018 15:41:45: #1 read tag files... 
+INFO  @ Fri, 16 Feb 2018 15:41:45: #1 read treatment tags... 
+INFO  @ Fri, 16 Feb 2018 15:42:01: #1.2 read input tags... 
+INFO  @ Fri, 16 Feb 2018 15:42:10:  1000000 
+INFO  @ Fri, 16 Feb 2018 15:42:17:  2000000 
+INFO  @ Fri, 16 Feb 2018 15:42:24:  3000000 
+INFO  @ Fri, 16 Feb 2018 15:42:31:  4000000 
+INFO  @ Fri, 16 Feb 2018 15:42:37:  5000000 
+INFO  @ Fri, 16 Feb 2018 15:42:44:  6000000 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 tag size is determined as 98 bps 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 tag size = 98 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  total tags in treatment: 2273761 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 user defined the maximum tags... 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  tags after filtering in treatment: 1501974 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  Redundant rate of treatment: 0.34 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  total tags in control: 6328266 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 user defined the maximum tags... 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 filter out redundant tags at the same location and the same strand by allowing at most 1 tag(s) 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  tags after filtering in control: 5617384 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1  Redundant rate of control: 0.11 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #1 finished! 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #2 Build Peak Model... 
+INFO  @ Fri, 16 Feb 2018 15:42:48: #2 looking for paired plus/minus strand peaks... 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #2 number of paired peaks: 6777 
+INFO  @ Fri, 16 Feb 2018 15:42:49: start model_add_line... 
+INFO  @ Fri, 16 Feb 2018 15:42:49: start X-correlation... 
+INFO  @ Fri, 16 Feb 2018 15:42:49: end of X-cor 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #2 finished! 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #2 predicted fragment length is 300 bps 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #2 alternative fragment length(s) may be 300 bps 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #2.2 Generate R script for model : ./condition_2_model.r 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #3 Call peaks... 
+INFO  @ Fri, 16 Feb 2018 15:42:49: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Fri, 16 Feb 2018 15:43:11: #3 Call peaks for each chromosome... 
+INFO  @ Fri, 16 Feb 2018 15:43:23: #4 Write output xls file... ./condition_2_peaks.xls 
+INFO  @ Fri, 16 Feb 2018 15:43:23: #4 Write peak in narrowPeak format file... ./condition_2_peaks.narrowPeak 
+INFO  @ Fri, 16 Feb 2018 15:43:23: #4 Write summits bed file... ./condition_2_summits.bed 
+INFO  @ Fri, 16 Feb 2018 15:43:23: Done! 
+Starting...
+Reading annotation.gtf file
+Reading condition_2_summits.bed file
+Program ended successfully
+Error in file(file, "rt") : cannot open the connection
+Calls: read.table -> file
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file '/home/marsanro/tmp/chipseq/results/condition_2/condition_2_summits.overlap.bed': No such file or directory
+Execution halted
+Fatal error: cannot open file 'condition_2_model.R': No such file or directory

@@ -1,0 +1,91 @@
+#! /bin/bash
+
+echo "Please enter the path to the Installation Folder:"
+read INST_FOLD
+echo "Please enter the path to Root Directory:"
+read ROOT_DIR
+echo "Please enter the Experiment name:"
+read EXP_NAME
+echo "Do you have the files already downloaded? (yes/no):"
+read LOCAL
+LOCAL=${LOCAL,,}
+
+if [ "$LOCAL" == "yes" ]
+then
+    WORD="path"
+elif [ "$LOCAL" == "no" ]
+then
+    WORD="link"
+else
+    echo "Please type yes/no"
+    echo "Aborting"
+    exit 1
+fi
+
+echo "RNAseq FILES"
+echo "------------"
+echo "Please indicate the $WORD to the RNAseq genome file:"
+read RNA_GENOME
+echo "Please indicate the $WORD to the RNAseq annotation file:"
+read RNA_ANNOT
+echo "How many RNAseq samples do you have?:"
+read RNA_NUM
+for (( c=1; c<=${RNA_NUM}; c++ ))
+do
+  echo "Please indicate the $WORD to the RNAseq sample $c:"
+  read RNA_"$c"
+  echo "Please indicate the genotype of the RNAseq sample $c:"
+  read RNA_GEN_"$c"
+done
+echo "CHIPseq FILES"
+echo "------------"
+echo "Please indicate the $WORD to the ChIPseq genome file:"
+read CHIP_GENOME
+echo "Please indicate the $WORD to the ChIPseq annotation file:"
+read CHIP_ANNOT
+echo "How many ChIPseq CONTROL samples do you have?:"
+read CHIP_CONTROL_NUM
+for (( c=1; c<=${CHIP_CONTROL_NUM}; c++ ))
+do
+  echo "Please indicate the $WORD to the ChIPseq CONTROL sample $c:"
+  read CHIP_CONTROL_"$c"
+done
+echo "How many ChIPseq INPUT samples do you have?:"
+read CHIP_INPUT_NUM
+for (( c=1; c<=${CHIP_INPUT_NUM}; c++ ))
+do
+  echo "Please indicate the $WORD to the ChIPseq INPUT sample $c:"
+  read CHIP_INPUT_"$c"
+  echo "Please indicate the genotype of the ChIPseq INPUT sample $c:"
+  read CHIP_INPUT_GEN_"$c"
+done
+
+echo "installation_folder: $INST_FOLD" > $INST_FOLD/param_file.txt
+echo "root_directory: $ROOT_DIR" >> $INST_FOLD/param_file.txt
+echo "experiment_name: $EXP_NAME" >> $INST_FOLD/param_file.txt
+echo "local: $LOCAL" >> $INST_FOLD/param_file.txt
+echo "#### RNAseq " >> $INST_FOLD/param_file.txt
+echo "rna_genome: "  >> $INST_FOLD/param_file.txt
+echo "rna_annotation"  >> $INST_FOLD/param_file.txt
+echo "number_of_RNA_samples: $RNA_NUM" >> $INST_FOLD/param_file.txt
+for (( c=1; c<=${RNA_NUM}; c++ ))
+do
+  eval 'echo rna_sample_$c: ${'"RNA_$c"'} >> $INST_FOLD/param_file.txt'
+  eval 'echo rna_genotype_$c: ${'"RNA_GEN_$c"'} >> $INST_FOLD/param_file.txt'
+done
+echo "#### ChIPseq" >> $INST_FOLD/param_file.txt
+echo "chip_genome:" $CHIP_GENOME  >> $INST_FOLD/param_file.txt
+echo "chip_annotation:" $CHIP_ANNOT  >> $INST_FOLD/param_file.txt
+echo "number_of_control_samples: $CHIP_CONTROL_NUM" >> $INST_FOLD/param_file.txt
+echo "number_of_input_samples: $CHIP_INPUT_NUM" >> $INST_FOLD/param_file.txt
+for (( c=1; c<=${CHIP_CONTROL_NUM}; c++ ))
+do
+  eval 'echo control_$c: ${'"CHIP_CONTROL_$c"'} >> $INST_FOLD/param_file.txt'
+done
+for (( c=1; c<=${CHIP_INPUT_NUM}; c++ ))
+do
+  eval 'echo input_$c: ${'"CHIP_INPUT_$c"'} >> $INST_FOLD/param_file.txt'
+  eval 'echo input_genotype_$c: ${'"CHIP_INPUT_GEN_$c"'} >> $INST_FOLD/param_file.txt'
+done
+
+echo "The parameter file has been created."

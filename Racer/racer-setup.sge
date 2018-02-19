@@ -1,0 +1,151 @@
+PARAM_FILE=$1
+
+#Parameters reading
+INST_FOLDER=$( grep installation_folder: $PARAM_FILE | awk '{print $2}')
+ROOT_DIR=$( grep root_directory: $PARAM_FILE | awk '{print $2}')
+EXP_NAME=$( grep experiment_name: $PARAM_FILE | awk '{print $2}')
+LOCAL=$( grep local: $PARAM_FILE | awk '{print $2}' )
+LOCAL=${LOCAL,,}
+
+RNA_GENOME=$( grep rna_genome: $PARAM_FILE | awk '{print $2}')
+RNA_ANNOTATION=$( grep rna_annotation: $PARAM_FILE | awk '{print $2}' )
+RNA_NUM=$( grep number_of_RNA_samples: $PARAM_FILE | awk '{print $2}')
+
+CHIP_GENOME=$( grep rna_genome: $PARAM_FILE | awk '{print $2}')
+CHIP_ANNOTATION=$( grep chip_annotation: $PARAM_FILE | awk '{print $2}' )
+CONTROL_NUM=$( grep number_of_control_samples: $PARAM_FILE | awk '{print $2}')
+INPUT_NUM=$( grep number_of_input_samples: $PARAM_FILE | awk '{print $2}')
+
+for (( c=1; c<=${RNA_NUM}; c++ ))
+do
+  RNA_SAMPLE_$c=$( grep rna_sample_$c: $PARAM_FILE | awk '{print $2}')
+  RNA_GEN_$c=$( grep rna_genotype_$c: $PARAM_FILE | awk '{print $2}')
+done
+
+for (( c=1; c<=${CONTROL_NUM}; c++ ))
+do
+  CONTROL_SAMPLE_$c=$( grep control_$c: $PARAM_FILE | awk '{print $2}')
+  CONTROL_GEN_$c=$( grep control_$c: $PARAM_FILE | awk '{print $2}')
+done
+
+for (( c=1; c<=${INPUT_NUM}; c++ ))
+do
+  INPUT_SAMPLE_$c=$( grep input_$c: $PARAM_FILE | awk '{print $2}')
+  INPUT_GEN_$c=$( grep input_$c: $PARAM_FILE | awk '{print $2}')
+done
+
+
+#Build working directories
+cd $ROOT_DIR
+mkdir $EXP_NAME
+cd $EXP_NAME
+mkdir rnaseq chipseq log
+WORKING_DIR=$ROOT_DIR/$EXP_NAME
+WORKING_RNA=$WORKING_DIR/rnaseq
+WORKING_CHIP=$WORKING_DIR/chipseq
+
+#RNAseq working directory
+cd rnaseq
+mkdir genome annotation results samples log
+cd samples
+
+for (( c=1; c<=${RNA_NUM}; c++ ))
+do
+   cd $WORKING_RNA
+   mkdir sample$c
+   cd sample$c
+   if [ "$LOCAL" == "yes" ]
+   then
+       mv $RNA_SAMPLE sample$c
+   elif [ "$LOCAL" == "no" ]
+   then
+       wget -O sample$c $RNA_SAMPLE
+   fi
+done
+
+if [ "$LOCAL" == "yes" ]
+then
+    cd $WORKING_RNA/genome
+    mv $RNA_GENOME genome.fa
+    cd $WORKING_RNA/annotation
+    mv $RNA_ANNOTATION annotation.gtf
+elif [ "$LOCAL" == "no" ]
+then
+    cd $WORKING_RNA/genome
+    wget -O genome.fa.gz $RNA_GENOME
+    gunzip genome.fa.gz
+    cd $WORKING_RNA/annotation
+    wget -O annotation.gtf.gz $RNA_ANNOTATION
+    gunzip annotation.gtf.gz
+fi
+
+#ChipSEQ working Directory
+cd $WORKING_CHIP
+mkdir genome annotation results samples log
+cd samples
+
+if [ "$LOCAL" == "yes" ]
+then
+    cd $WORKING_CHIP/genome
+    mv $CHIP_GENOME genome.fa
+    cd $WORKING_CHIP/annotation
+    mv $CHIP_ANNOTATION annotation.gtf
+elif [ "$LOCAL" == "no" ]
+then
+    cd $WORKING_CHIP/genome
+    wget -O genome.fa.gz $CHIP_GENOME
+    gunzip genome.fa.gz
+    cd $WORKING_RNA/annotation
+    wget -O annotation.gtf.gz $CHIP_ANNOTATION
+    gunzip annotation.gtf.gz
+fi
+
+for (( c=1; c<=${CONTROL_NUM}; c++ ))
+do
+   cd $WORKING_CHIP
+   mkdir control$c
+   cd control$c
+   if [ "$LOCAL" == "yes" ]
+   then
+       mv $CONTROL_SAMPLE control$c
+   elif [ "$LOCAL" == "no" ]
+   then
+       wget -O control$c $CONTROL_SAMPLE
+   fi
+done
+
+for (( c=1; c<=${INPUT_NUM}; c++ ))
+do
+   cd $WORKING_CHIP
+   mkdir input$c
+   cd control$c
+   if [ "$LOCAL" == "yes" ]
+   then
+       mv $INPUT_SAMPLE input$c
+   elif [ "$LOCAL" == "no" ]
+   then
+       wget -O input$c $INPUT_SAMPLE
+   fi
+done
+
+echo "GENOMES AND REFERENCES DOWNLOADED SUCCESSFULLY" > $WORKING_DIR/log/log.txt
+echo "WORKING DIRECTORIES DONE" >> $WORKING_DIR/log/log.txt
+
+## Building reference genome index for RNAseq
+cd $INST_FOLDER
+cd rnaseq
+STRING=""
+for (( c=1; c<=${RNA_NUM}; c++ ))
+do
+    STRING="$STRING +$WORKING_RNA/samples/sample$c/sample$c.fa" #no se como se llama la muestra 
+done
+
+bash rnaseq-pipeline $INST_FOLDER $ROOT_DIR $EXP_NAME $RNA_GENOME $RNA_ANNOTATION $RNA_NUM
+
+
+#ARGUMENTOS
+
+## Building reference genome index for ChIPseq
+cd $INST_FOLDER
+cd chipseq
+bash chipseq-pipeline $INST_FOLDER $ROOT_DIR $EXP_NAME $CHIP_GENOME $CHIP_ANNOTATION $CONTROL_NUM $INPUT_NUM

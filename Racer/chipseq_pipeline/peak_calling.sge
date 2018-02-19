@@ -1,0 +1,28 @@
+#$ -S /bin/bash
+#$ -V
+#$ -cwd
+#$ -j yes
+
+COND=$1
+CHIP_COND=$2
+INPUT_COND=$3
+WORKING_DIR=$4
+NUM_CONDITIONS=$5
+INSTALLATION=$6
+
+cd $WORKING_DIR/results
+mkdir $COND
+cd $COND
+
+
+macs2 callpeak -t $WORKING_DIR/samples/$CHIP_COND/${CHIP_COND}.sam -c $WORKING_DIR/samples/$INPUT_COND/${INPUT_COND}.sam -f SAM --outdir . -n $COND
+
+cd $INSTALLATION
+java -jar $INSTALLATION/PeakAnnotator.jar -u NDG -p $WORKING_DIR/results/${COND}/${COND}_summits.bed -a $WORKING_DIR/annotation/annotation.gtf -o $WORKING_DIR/results/$COND -g all
+echo "peakcalling $CHIP_COND $INPUT_COND DONE" >> ${WORKING_DIR}/log/blackboard_peak_calling.txt
+
+# Rscript calling
+Rscript target_genes.R ~$WORKING_DIR/results/${COND}/${COND}_summits.ndg.bed $WORKING_DIR/results/${COND}/${COND}_summits.overlap.bed $WORKING_DIR/results/${COND}/target_genes_${COND}.txt
+
+cd $WORKING_DIR/results/${COND}
+Rscript ${COND}_model.R

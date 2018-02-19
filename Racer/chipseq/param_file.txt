@@ -1,0 +1,19 @@
+installation_folder: /home/bms2017_08/dev/chipseq_pipeline
+local: YES
+root_directory: /home/bms2017_08/tmp
+experiment_name: chipseq
+number_of_samples: 2
+genome: /home/bms2017_08/prr5/genome/chromosome1.fa
+annotation: /home/bms2017_08/prr5/annotation/chromosome1.gtf
+
+## CHIP
+number_of_chip_samples: 1
+chip1: /home/bms2017_08/prr5/samples/chip/chip_prr5_chr1.fastq
+
+## INPUTS
+number_of_input_samples: 1
+input1: /home/bms2017_08/prr5/samples/control/input_prr5_chr1.fastq
+
+## CONDITIONS
+number_of_conditions: 1
+condition_1: chip1 input1

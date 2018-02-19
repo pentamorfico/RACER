@@ -1,0 +1,72 @@
+## This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International$
+## Author: Mario Rodríguez Mestre
+## Date: November 2017
+## Email: mariorguez@correo.ugr.es
+
+#$ -S /bin/bash
+#$ -V
+#$ -cwd
+#$ -j yes
+
+## Naming input parameters
+J=$1
+WORKING_DIR=$2
+SAMPLE=$3
+CHIP=$4
+NUM_CHIP=$5
+NUM_INPUT=$6
+INSTALLATION=$7
+PARAM_FILE=$8
+LOCAL=$9
+
+NUM_SAMPLES=`expr $NUM_CHIP + $NUM_INPUT`
+SAMPLE_PATH=${WORKING_DIR}/samples/$CHIP${J}
+
+## Downloading sample file
+cd $SAMPLE_PATH
+
+if [ "$LOCAL" == "YES" ]
+then
+    #cp $SAMPLE ${CHIP}${J}.sra
+    cp $SAMPLE ${CHIP}${J}_1.fastq #Como en este caso, los datos proporcionados de prr5 están directamente en fastq, nos saltamos el posterior paso de fastq-dump
+elif [ "$LOCAL" == "NO" ]
+then
+    wget -O $CHIP${J}.sra $SAMPLE
+fi
+
+#Extracting sample file
+#fastq-dump --split-files ${CHIP}${J}.sra
+#rm ${CHIP}${J}.sra
+
+## Sample quality control and read mapping to reference genome
+if [ -f ${CHIP}${J}_2.fastq ]
+then
+  #fastqc ${CHIP}${J}_1.fastq
+  #fastqc ${CHIP}${J}_2.fastq
+  bowtie -S -v 2 --best --strata -m 1 $WORKING_DIR/genome/index -1 ${CHIP}${J}_1.fastq -2 ${CHIP}${J}_2.fastq ${CHIP}${J}.sam
+elif [ -f ${CHIP}${J}_1.fastq ]
+then
+  #fastqc ${CHIP}${J}_1.fastq
+  bowtie -S -v 2 --best --strata -m 1 $WORKING_DIR/genome/index ${CHIP}${J}_1.fastq ${CHIP}${J}.sam
+else
+  #fastqc ${CHIP}${1}.fastq
+  bowtie -S -v 2 --best --strata -m 1 $WORKING_DIR/genome/index ${CHIP}${J}.fast1 ${CHIP}${J}.sam
+fi
+
+## Communication through a blackboard
+echo "$CHIP $J DONE" >> ${WORKING_DIR}/log/blackboard_sample_processing.txt
+
+SAMPLES_DONE=$( wc -l ${WORKING_DIR}/log/blackboard_sample_processing.txt | awk '{print $1}' )
+
+if [ $SAMPLES_DONE -eq $NUM_SAMPLES ]
+then
+cd $INSTALLATION
+NUM_CONDITIONS=$( grep number_of_conditions: $PARAM_FILE | awk '{print $2}')
+for (( c=1; c<=${NUM_CONDITIONS}; c++ ))
+do
+  COND="condition_${c}"
+  CHIP_COND=$( grep condition_${c}: $PARAM_FILE | awk '{print $2}')
+  INPUT_COND=$( grep condition_${c}: $PARAM_FILE | awk '{print $3}')
+  qsub -N peak_calling_condition${c} -o peak_calling_condition${c} peak_calling.sge $COND $CHIP_COND $INPUT_COND $WORKING_DIR $NUM_CONDITIONS $INSTALLATION
+done
+fi

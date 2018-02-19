@@ -1,0 +1,104 @@
+## This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+## Author: Mario Rodríguez Mestre, Sandra Robles Borrego
+## Date: November 2017
+## Email: mariorguez@correo.ugr.es
+
+#! /bin/bash
+
+function usage {
+echo "Usage:"
+echo "  chipseq_pipeline <param_file>"
+echo ""
+echo "Pipeline script for Bowtie/macs2/PeakAnnotator ChIP-Seq analysis protocol."
+echo "In order to configure the pipeline options edit the file param_file.txt which must be
+placed in the current (working) directory where this script is being launched."
+echo "Output directories will be created in the a tmp folder
+(which will be created if it does not exist)."
+echo ""
+}
+
+## Checking the nubmer of input parameters and printing help message
+if [ "$#" -ne 1 ]
+then
+   usage
+   exit 1
+fi
+
+## A single input is expected containing the parameter file
+PARAM_FILE=$1
+
+## Lee los parámetros y crea variables buscando las líneas con palabra tras
+## 'grep' y haciendo un print de la segunda variable (tras "var:" en param_file)
+
+LOCAL=$( grep local: $PARAM_FILE | awk '{print $2}' )
+INSTALLATION=$( grep installation_folder: $PARAM_FILE | awk '{print $2}')
+ROOT_DIR=$( grep root_directory: $PARAM_FILE | awk '{print $2}')
+EXP_NAME=$( grep experiment_name: $PARAM_FILE | awk '{print $2}')
+NUM_INPUT=$( grep number_of_input_samples: $PARAM_FILE | awk '{print $2}')
+NUM_CHIP=$( grep number_of_chip_samples: $PARAM_FILE | awk '{print $2}')
+GENOME=$( grep genome: $PARAM_FILE | awk '{print $2}')
+ANNOTATION=$( grep annotation: $PARAM_FILE | awk '{print $2}' )
+WORKING_DIR=${ROOT_DIR}/${EXP_NAME}
+
+## Building working directory structure
+cd $ROOT_DIR
+mkdir $EXP_NAME
+cd $EXP_NAME
+mkdir genome annotation results samples log
+cd samples
+
+for (( c=1; c<=${NUM_CHIP}; c++ ))
+do
+   mkdir chip$c
+done
+
+for (( c=1; c<=${NUM_INPUT}; c++ ))
+do
+   mkdir input$c
+done
+
+echo "WORKING DIRECTORY DONE" >> $WORKING_DIR/log/log.txt
+
+## Copying reference genome and annotation (gunziped, if online, do gunzip)
+
+if [ "$LOCAL" == "YES" ]
+then
+    cd $WORKING_DIR/genome
+    cp $GENOME genome.fa
+    cd $WORKING_DIR/annotation
+    cp $ANNOTATION annotation.gtf
+elif [ "$LOCAL" == "NO" ]
+then
+    cd $WORKING_DIR/genome
+    wget -O genome.fa.gz $GENOME
+    gunzip genome.fa.gz
+    cd $WORKING_DIR/annotation
+    wget -O annotation.gtf.gz $ANNOTATION
+    gunzip annotation.gtf.gz
+fi
+
+echo "GENOME AND REFERENCE DOWNLOADED SUCCESSFULLY" > $WORKING_DIR/log/log.txt
+
+## Building reference genome index
+cd $WORKING_DIR/genome/
+bowtie-build genome.fa index
+echo "REFERENCE GENOME INDEX DONE" >> $WORKING_DIR/log/log.txt
+
+## Parallel sample processing
+cd $INSTALLATION
+
+for (( c=1; c<=${NUM_CHIP}; c++ ))
+do
+   SAMPLE=$( grep chip${c}: $PARAM_FILE | awk '{print $2}' )
+   CHIP="chip"
+   qsub -N chip$c -o chip$c sample_processing_chip.sge $c $WORKING_DIR $SAMPLE $CHIP $NUM_CHIP $NUM_INPUT $INSTALLATION $PARAM_FILE $LOCAL
+   echo "PROCESSING SAMPLE $c" >> $WORKING_DIR/log/log.txt
+done
+
+for (( c=1; c<=${NUM_INPUT}; c++ ))
+do
+   SAMPLE=$( grep input${c}: $PARAM_FILE | awk '{print $2}' )
+   CHIP="input"
+   qsub -N input$c -o input$c sample_processing_chip.sge $c $WORKING_DIR $SAMPLE $CHIP $NUM_CHIP $NUM_INPUT $INSTALLATION $PARAM_FILE $LOCAL
+   echo "PROCESSING SAMPLE $c" >> $WORKING_DIR/log/log.txt
+done

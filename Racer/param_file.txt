@@ -1,0 +1,18 @@
+installation_folder: /home/marsanro/dev/Mario/Racer
+root_directory: /home/marsanro/tmp
+experiment_name: Coleguilla
+local: yes
+#### RNAseq 
+rna_genome: 
+rna_annotation
+number_of_RNA_samples: 1
+rna_sample_1: asd
+rna_genotype_1: asd
+#### ChIPseq
+chip_genome asd
+chip_annotation asd
+number_of_control_samples: 1
+number_of_input_samples: 1
+control_1: asd
+input_1: asd
+input_genotype_1: asd

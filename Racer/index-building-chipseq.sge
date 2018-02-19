@@ -1,0 +1,26 @@
+
+
+
+
+cd $WORKING_CHIP/genome/
+bowtie-build genome.fa index
+echo "REFERENCE GENOME INDEX FOR CHIPSEQ DONE" >> $WORKING_DIR/log/log.txt
+
+cd $INSTALLATION
+
+Parallel sample processing
+for (( c=1; c<=${NUM_CHIP}; c++ ))
+do
+   SAMPLE=$( grep chip${c}: $PARAM_FILE | awk '{print $2}' )
+   CHIP="chip"
+   qsub -N chip$c -o chip$c sample_processing_chip.sge $c $WORKING_DIR $SAMPLE $CHIP $NUM_CHIP $NUM_INPUT $INSTALLATION $PARAM_FILE $LOCAL
+   echo "PROCESSING SAMPLE $c" >> $WORKING_DIR/log/log.txt
+done
+
+for (( c=1; c<=${NUM_INPUT}; c++ ))
+do
+   SAMPLE=$( grep input${c}: $PARAM_FILE | awk '{print $2}' )
+   CHIP="input"
+   qsub -N input$c -o input$c sample_processing_chip.sge $c $WORKING_DIR $SAMPLE $CHIP $NUM_CHIP $NUM_INPUT $INSTALLATION $PARAM_FILE $LOCAL
+   echo "PROCESSING SAMPLE $c" >> $WORKING_DIR/log/log.txt
+done

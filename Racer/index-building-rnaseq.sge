@@ -1,0 +1,22 @@
+
+
+
+
+cd $WORKING_RNA/genome
+extract_splice_sites.py $WORKING_DIR/annotation/annotation.gtf > splices_sites.ss
+extract_exons.py $WORKING_DIR/annotation/annotation.gtf > exons.exon
+hisat2-build --ss splices_sites.ss --exon exons.exon genome.fa index
+echo "REFERENCE GENOME INDEX FOR RNASEQ DONE" >> $WORKING_DIR/log/log.txt
+
+cd $INSTALLATION
+
+Parallel sample processing
+## Parallel sample processing
+cd $INST_FOLDER
+
+for (( c=1; c<=${NUM_SAMPLES}; c++ ))
+do
+  SAMPLE=$( grep sample${c}: $PARAM_FILE | awk '{print _$2}' )
+  qsub -N sample$c -o sample$c sample_processing.sge $c $WORKING_DIR $SAMPLE $NUM_SAMPLES $INSTALLATION $PARAM_FILE $LOCAL
+  echo "PROCESSING SAMPLE $c" >> $WORKING_DIR/log/log.txt
+done

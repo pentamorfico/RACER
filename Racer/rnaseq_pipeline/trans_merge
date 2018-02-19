@@ -1,0 +1,3 @@
+Error: cannot find file '/home/marsanro/tmp/examen_rnaseq/samples/sample1/sample1.gtf' and merge_list.txt does not look like GFF!
+/var/spool/gridengine/execd/molsysbio/job_scripts/1808: line 27: ((: c<=: syntax error: operand expected (error token is "<=")
+/var/spool/gridengine/execd/molsysbio/job_scripts/1825: line 27: ((: c<=: syntax error: operand expected (error token is "<=")

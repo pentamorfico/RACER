@@ -1,0 +1,39 @@
+## This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+## Author: Mario Rodríguez & Sandra Rodríguez
+## Date: December 2017
+## Email: mariorguez@correo.ugr.es
+
+#! /bin/bash
+
+## Usage
+
+if [ "$#" -ne 1 ]
+then
+   echo "Incorrect number of input parameters"
+   echo ""
+   echo "This pipeline analyses ChIP-seq data"
+   echo "Usage: chipseq_pipeline <param_file>"
+   echo "    param_file: file input name. See below for an example"
+   echo ""
+   echo ""
+
+   exit 1
+fi
+
+## A single input is expected containing the parameter file
+PARAM_FILE=$1
+
+## Reading mode from parameter file
+LOCAL=$( grep local: $PARAM_FILE | awk '{print $2}' )
+INSTALLATION=$( grep installation_folder: $PARAM_FILE | awk '{print $2}' )
+
+if [ "$LOCAL" == "YES" ]
+then
+   ${INSTALLATION}/chipseq_pipeline $PARAM_FILE $LOCAL
+elif [ "$LOCAL" == "NO" ]
+then
+   ${INSTALLATION}/chipseq_pipeline $PARAM_FILE
+else
+   echo "ERROR INCORRECT LOCAL OPTION. VALID VALUES YES OR NO."
+   exit 1
+fi
